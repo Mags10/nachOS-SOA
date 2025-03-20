@@ -141,9 +141,7 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
 
 void AddrSpace::createSwapFile(OpenFile *executable, char* filename)
 {
-    // Skip first 40 bytes (NOFF header)
-    int headerSize = sizeof(NoffHeader); // 40 bytes
-    DPRINT("Tamaño del header: %d\n", headerSize);
+    int headerSize = sizeof(NoffHeader); // Obtieen el tamaño del header (40 bytes)
     int fileSize = executable->Length() - headerSize;
     char *content = new char[fileSize];
     executable->ReadAt(content, fileSize, headerSize);
@@ -154,7 +152,6 @@ void AddrSpace::createSwapFile(OpenFile *executable, char* filename)
         DEBUG('a', "No se pudo crear el archivo swap\n");
     OpenFile *swapFile = fileSystem->Open(newname);
     swapFile->Write(content, fileSize);
-    DPRINT("Archivo swap guardado en: %s\n", newname);
     delete swapFile;
     delete[] content;
     delete[] newname;
