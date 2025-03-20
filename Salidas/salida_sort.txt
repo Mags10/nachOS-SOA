@@ -1,0 +1,3 @@
+a) Tamaño del proceso: 5920
+b) Número de páginas: 47
+c) Memoria asignada al proceso: 6016
