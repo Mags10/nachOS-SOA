@@ -74,12 +74,12 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
 						// to leave room for the stack
     numPages = divRoundUp(size, PageSize);
     // Imprimir el tamaño del proceso
-    //DPRINT("a) Tamaño del proceso: %d\n", size);
+    DPRINT("a) Tamaño del proceso: %d\n", size);
     size = numPages * PageSize;
     // Imprimir el número de páginas
-    //DPRINT("b) Número de páginas: %d\n", numPages);
+    DPRINT("b) Número de páginas: %d\n", numPages);
     // Memoria asignada al proceso
-    //DPRINT("c) Memoria asignada al proceso: %d\n", size);
+    DPRINT("c) Memoria asignada al proceso: %d\n", size);
 
     // Crear archivo swap
     createSwapFile(executable, filename);
@@ -96,8 +96,8 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
 
     // Impresion de headers de la tabla
     //  VirtualPage   PhysicalPage    Bit Validez 
-    //DPRINT("d) Tabla de páginas\n");
-    //DPRINT("\tVirtualPage\tPhysicalPage\tValid\n");
+    DPRINT("d) Tabla de páginas\n");
+    DPRINT("\tVirtualPage\tPhysicalPage\tValid\n");
     for (i = 0; i < numPages; i++) {
         pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
         pageTable[i].physicalPage = i;
@@ -108,7 +108,7 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
                         // a separate page, we could set its 
                         // pages to be read-only}
         // Impresion de la tabla de páginas
-        //DPRINT("\t%d\t\t%d\t\t%d\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid);
+        DPRINT("\t%d\t\t%d\t\t%d\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid);
     }
     
 // zero out the entire address space, to zero the unitialized data segment 
@@ -129,9 +129,8 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
 			noffH.initData.size, noffH.initData.inFileAddr);
     }
     
-    //DPRINT("e) Mapeo de direcciones lógicas a físicas\n");
-    //DPRINT("\tDirección Lógica\tNo. De Página(p)\tDesplazamiento(d)\tDirección Física\n");
-	
+    DPRINT("e) Mapeo de direcciones lógicas a físicas\n");
+    DPRINT("\tDirección Lógica\tNo. De Página(p)\tDesplazamiento(d)\tDirección Física\n");
 }
 
 // ---------------------------------------------------------------------
