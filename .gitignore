@@ -1,0 +1,20 @@
+# Compiled files
+*.o
+*.exe
+
+# NachOS specific
+nachos
+DISK
+
+# Build directories
+build/
+bin/
+
+# Temporary files
+*.log
+*.tmp
+*~
+
+# IDE specific files (if you're using any)
+.vscode/
+.idea/
