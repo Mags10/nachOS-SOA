@@ -1,16 +1,3 @@
 # Compiled files
 *.o
 *.exe
-
-# NachOS specific
-nachos
-DISKGit
-
-# Temporary files
-*.log
-*.tmp
-*~
-
-# IDE specific files (if you're using any)
-.vscode/
-.idea/
