@@ -4,11 +4,7 @@
 
 # NachOS specific
 nachos
-DISK
-
-# Build directories
-build/
-bin/
+DISKGit
 
 # Temporary files
 *.log
