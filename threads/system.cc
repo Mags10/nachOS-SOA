@@ -91,19 +91,24 @@ Initialize(int argc, char **argv)
     double rely = 1;		// network reliability
     int netname = 0;		// UNIX socket name
 #endif
-    
+    bool dprint = FALSE;	// debug personalizado
     for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount) {
 	argCount = 1;
-	if (!strcmp(*argv, "-d") || !strcmp(*argv, "-pr")){
-	    if (argc == 1){
-            if (!strcmp(*argv, "-d"))
-                debugArgs =  "+";	// turn on all debug flags
-            else
-                debugArgs =  "#";	// turn on all debug flags
-        } else {
+	if (!strcmp(*argv, "-d")) {
+	    if (argc == 1)
+		    debugArgs = "+";	// turn on all debug flags
+	    else {
 	    	debugArgs = *(argv + 1);
 	    	argCount = 2;
 	    }
+	}else if (!strcmp(*argv, "-dprint")){
+        dprint = TRUE;
+        if (argc == 1)
+            debugArgs = "+";
+        else {
+            debugArgs = *(argv + 1);
+            argCount = 2;
+        }
 	} else if (!strcmp(*argv, "-rs")) {
 	    ASSERT(argc > 1);
 	    RandomInit(atoi(*(argv + 1)));	// initialize pseudo-random
@@ -132,7 +137,7 @@ Initialize(int argc, char **argv)
 #endif
     }
 
-    DebugInit(debugArgs);			// initialize DEBUG messages
+    DebugInit(debugArgs, dprint);			// initialize DEBUG messages
     stats = new Statistics();			// collect statistics
     interrupt = new Interrupt;			// start up interrupt handling
     scheduler = new Scheduler();		// initialize the ready queue

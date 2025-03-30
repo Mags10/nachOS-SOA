@@ -252,7 +252,11 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
     ASSERT((*physAddr >= 0) && ((*physAddr + size) <= MemorySize));
     DEBUG('a', "phys addr = 0x%x\n", *physAddr);
 	
-	DPRINT("\t%d\t\t\t%d\t\t\t%d\t\t\t%d*%d+%d=%d\n", virtAddr, vpn, offset, pageFrame, PageSize, offset, *physAddr);
-
+    // Para inciso 3 - P03
+	if (machine->ReadRegister(BadVAddrReg) != virtAddr) {
+		DPRINT('t', "\t%d\t\t\t%d\t\t\t%d\t\t\t%d*%d+%d=%d\n", virtAddr, vpn, offset, pageFrame, PageSize, offset, *physAddr);
+	} else {
+		DPRINT('p',"\t%d\t\t\t%d\t\t\t%d\t\t\t%d*%d+%d=%d\t\t*Fallo %d\n", virtAddr, vpn, offset, pageFrame, PageSize, offset, *physAddr, stats->numPageFaults);
+	}
     return NoException;
 }

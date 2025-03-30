@@ -27,8 +27,12 @@
 
 #define UserStackSize		1024 	// increase this as necessary!
 
+#define SwapNameSize		256 // Size of the swap file name
+
 class AddrSpace {
   public:
+  char swapFileName[SwapNameSize]; // Name of the swap file
+    
     AddrSpace(OpenFile *executable, char* filename);	// Create an address space,
 					// initializing it with the program
 					// stored in the file "executable"
@@ -42,6 +46,9 @@ class AddrSpace {
     void createSwapFile(OpenFile *executable, char* filename);
     
     void createRevFile(OpenFile *executable, char* filename);
+
+    void SwapIn();			// Swap in a page from the swap file
+          // into the main memory
 
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation

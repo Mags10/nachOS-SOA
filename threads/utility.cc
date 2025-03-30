@@ -22,6 +22,7 @@
 #endif
 
 static char *enableFlags = NULL; // controls which DEBUG messages are printed 
+static bool dprint = FALSE; // controls which DPRINT messages are printed
 
 //----------------------------------------------------------------------
 // DebugInit
@@ -37,9 +38,10 @@ static char *enableFlags = NULL; // controls which DEBUG messages are printed
 //----------------------------------------------------------------------
 
 void
-DebugInit(char *flagList)
+DebugInit(char *flagList, bool prn)
 {
     enableFlags = flagList;
+    dprint = prn;
 }
 
 //----------------------------------------------------------------------
@@ -50,6 +52,7 @@ DebugInit(char *flagList)
 bool
 DebugIsEnabled(char flag)
 {
+    if (dprint) return FALSE;
     if (enableFlags != NULL)
        return (strchr(enableFlags, flag) != 0) 
 		|| (strchr(enableFlags, '+') != 0);
@@ -82,10 +85,12 @@ DEBUG(char flag, char *format, ...)
 //----------------------------------------------------------------------
 
 bool
-DPrintIsEnabled()
+DPrintIsEnabled(char flag)
 {
+    if (!dprint) return FALSE;
     if (enableFlags != NULL)
-       return (strchr(enableFlags, '#') != 0);
+       return (strchr(enableFlags, flag) != 0) 
+		|| (strchr(enableFlags, '+') != 0);
     else
       return FALSE;
 }
@@ -98,9 +103,9 @@ DPrintIsEnabled()
 //----------------------------------------------------------------------
 
 void
-DPRINT(char *format, ...)
+DPRINT(char flag, char *format, ...)
 {
-    if (DPrintIsEnabled()) {
+    if (DPrintIsEnabled(flag)) {
     va_list ap;
     // You will get an unused variable message here -- ignore it.
     va_start(ap, format);
