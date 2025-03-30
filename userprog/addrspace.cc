@@ -82,7 +82,10 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
     DPRINT("c) Memoria asignada al proceso: %d\n", size);
 
     // Crear archivo swap
-    createSwapFile(executable, filename);
+    // createSwapFile(executable, filename);
+
+    // Crear archivo de actividad de revisión
+    createRevFile(executable, filename);
 
     ASSERT(numPages <= NumPhysPages);		// check we're not trying
 						// to run anything too big --
@@ -109,7 +112,7 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
                         // pages to be read-only}
         // Impresion de la tabla de páginas
         DPRINT("\t%d\t\t%d\t\t%d\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid);
-    }
+    }   
     
 // zero out the entire address space, to zero the unitialized data segment 
 // and the stack segment
@@ -149,6 +152,29 @@ void AddrSpace::createSwapFile(OpenFile *executable, char* filename)
     strcat(newname, ".swp");
     if(!fileSystem->Create(newname, fileSize))
         DEBUG('a', "No se pudo crear el archivo swap\n");
+    OpenFile *swapFile = fileSystem->Open(newname);
+    swapFile->Write(content, fileSize);
+    delete swapFile;
+    delete[] content;
+    delete[] newname;
+}
+
+// ---------------------------------------------------------------------
+// Función que crea archivo de revisión
+// Recibe el nombre del archivo y *executable
+// ---------------------------------------------------------------------
+
+void AddrSpace::createRevFile(OpenFile *executable, char* filename)
+{
+    int headerSize = sizeof(NoffHeader); // Obtieen el tamaño del header (40 bytes)
+    int fileSize = 32; // Será fijo de 32 bytes
+    char *content = new char[fileSize];
+    executable->ReadAt(content, fileSize, headerSize);
+    char *newname = new char[strlen(filename) + 4];
+    strcpy(newname, filename);
+    strcat(newname, ".rev");
+    if(!fileSystem->Create(newname, fileSize))
+        DEBUG('a', "No se pudo crear el archivo de revisión\n");
     OpenFile *swapFile = fileSystem->Open(newname);
     swapFile->Write(content, fileSize);
     delete swapFile;

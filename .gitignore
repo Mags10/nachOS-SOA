@@ -1,0 +1,30 @@
+# Archivos compilados
+*.o
+*.exe
+
+# Archivos de Nachos
+halt
+matmul
+sort
+shell
+core
+nachos
+DISK
+swtch.s
+/*.coff
+test/*.coff
+bin/coff2flat
+bin/flat2coff
+bin/coff2noff
+bin/disassemble
+bin/out
+
+# Archivos temporales
+*.log
+*.tmp
+*.swp
+*.rev
+
+# Archivos de configuración
+.vscode/
+.idea/

@@ -40,6 +40,8 @@ class AddrSpace {
     void SaveState();			// Save/restore address space-specific
     void RestoreState();		// info on a context switch 
     void createSwapFile(OpenFile *executable, char* filename);
+    
+    void createRevFile(OpenFile *executable, char* filename);
 
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
