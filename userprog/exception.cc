@@ -58,7 +58,8 @@ ExceptionHandler(ExceptionType which)
    	    interrupt->Halt();
     } else if (which == PageFaultException){
         // Para inciso 3 - P03
-        stats->numPageFaults++;
+        if (stats->numPageFaults < NumPhysPages)
+            stats->numPageFaults++;
         currentThread->space->SwapIn();
     } else {
         printf("Unexpected user mode exception %d %d\n", which, type);
