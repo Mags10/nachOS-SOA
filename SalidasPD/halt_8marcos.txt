@@ -1,0 +1,42 @@
+a) Tamaño del proceso: 1344
+b) Número de páginas: 11
+c) Memoria asignada al proceso: 1408
+Tabla de páginas:
+No. de página	Marco físico	Válido
+0		0		0
+1		1		0
+2		2		0
+3		3		0
+4		4		0
+5		5		0
+6		6		0
+7		7		0
+8		8		0
+9		9		0
+10		10		0
+e) Mapeo de direcciones lógicas a físicas
+	Dirección Lógica	No. De Página(p)	Desplazamiento(d)	Dirección Física	No. Fallo	
+	0			0			0			0*128+0=0		*Fallo 1
+	4			0			4			0*128+4=4
+	208			1			80			1*128+80=208		*Fallo 2
+	212			1			84			1*128+84=212
+	212			1			84			1*128+84=212
+	1384			10			104			2*128+104=360		*Fallo 3
+	216			1			88			1*128+88=216
+	1380			10			100			2*128+100=356
+	220			1			92			1*128+92=220
+	1376			10			96			2*128+96=352
+	224			1			96			1*128+96=224
+	228			1			100			1*128+100=228
+	232			1			104			1*128+104=232
+	16			0			16			0*128+16=16
+	20			0			20			0*128+20=20
+Machine halting!
+
+Ticks: total 23, idle 0, system 10, user 13
+Disk I/O: reads 0, writes 0
+Console I/O: reads 0, writes 0
+Paging: faults 3
+Network I/O: packets received 0, sent 0
+
+Cleaning up...

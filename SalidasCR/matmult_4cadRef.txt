@@ -1,0 +1,6 @@
+0, 0, 1, 1, 1, 53, 1, 53, 1, 53, 1, 1, 1, 53, 1, 53, 1, 1, 1, 1, 2, 53, 2, 53, 2, 2, 2, 2, 2, 53, 2, 2, 2, 2, 2, 2, 2, 2, 2, 53, 2, 2, 2, 2, 2, 53, 2, 2, 2, Unexpected user mode exception 4 1040
+Ticks: total 51, idle 0, system 10, user 41
+Disk I/O: reads 0, writes 0
+Console I/O: reads 0, writes 0
+Paging: faults 5
+Network I/O: packets received 0, sent 0

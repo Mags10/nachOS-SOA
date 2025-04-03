@@ -1,0 +1,29 @@
+a) Tamaño del proceso: 1344
+b) Número de páginas: 11
+c) Memoria asignada al proceso: 1408
+Tabla de páginas:
+No. de página	Marco físico	Válido
+0		0		0
+1		1		0
+2		2		0
+3		3		0
+4		4		0
+5		5		0
+6		6		0
+7		7		0
+8		8		0
+9		9		0
+10		10		0
+e) Mapeo de direcciones lógicas a físicas
+	Dirección Lógica	No. De Página(p)	Desplazamiento(d)	Dirección Física	No. Fallo	
+	0			0			0			0*128+0=0		*Fallo 1
+	4			0			4			0*128+4=4
+	208			1			80			1*128+80=208		*Fallo 2
+	212			1			84			1*128+84=212
+	212			1			84			1*128+84=212
+Unexpected user mode exception 4 0
+Ticks: total 16, idle 0, system 10, user 6
+Disk I/O: reads 0, writes 0
+Console I/O: reads 0, writes 0
+Paging: faults 3
+Network I/O: packets received 0, sent 0
