@@ -50,6 +50,8 @@ class AddrSpace {
     void SwapIn();			// Swap in a page from the swap file
           // into the main memory
 
+    void PrintPageTable();
+
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
 					// for now!

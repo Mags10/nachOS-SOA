@@ -99,10 +99,6 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
 // first, set up the translation 
     pageTable = new TranslationEntry[numPages];
 
-    // Impresion de headers de la tabla
-    //  VirtualPage   PhysicalPage    Bit Validez 
-    DPRINT('p',"d) Tabla de páginas\n");
-    DPRINT('p',"\tVirtualPage\tPhysicalPage\tValid\n");
     for (i = 0; i < numPages; i++) {
         pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
         pageTable[i].physicalPage = i;
@@ -114,18 +110,20 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
                         // a separate page, we could set its 
                         // pages to be read-only}
         // Impresion de la tabla de páginas
-        DPRINT('p',"\t%d\t\t%d\t\t%d\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid);
+        //DPRINT('p',"\t%d\t\t%d\t\t%d\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid);
     }   
+    PrintPageTable();
     
 // zero out the entire address space, to zero the unitialized data segment 
 // and the stack segment
 
     // Para inciso 3 - P03
-    if (numPages > NumPhysPages)
-        size = NumPhysPages * PageSize;
-    bzero(machine->mainMemory, size);
+    //if (numPages > NumPhysPages)
+        //size = NumPhysPages * PageSize;
+    //bzero(machine->mainMemory, size);
 
 // then, copy in the code and data segments into memory
+/*
     if (noffH.code.size > 0) {
         DEBUG('a', "Initializing code segment, at 0x%x, size %d\n", 
 			noffH.code.virtualAddr, noffH.code.size);
@@ -138,7 +136,7 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
         executable->ReadAt(&(machine->mainMemory[noffH.initData.virtualAddr]),
 			noffH.initData.size, noffH.initData.inFileAddr);
     }
-    
+    */
     DPRINT('p',"e) Mapeo de direcciones lógicas a físicas\n");
     DPRINT('p',"\tDirección Lógica\tNo. De Página(p)\tDesplazamiento(d)\tDirección Física\tNo. Fallo\t\n");
 }
@@ -197,7 +195,7 @@ void AddrSpace::createRevFile(OpenFile *executable, char* filename)
 
 AddrSpace::~AddrSpace()
 {
-   delete pageTable;
+    delete pageTable;
 }
 
 //----------------------------------------------------------------------
@@ -278,4 +276,20 @@ void AddrSpace::SwapIn()
                     ]), PageSize, pageNumber * PageSize);
     pageTable[pageNumber].valid = TRUE;
     delete swapFile;
+}
+
+//----------------------------------------------------------------------
+// AddrSpace::PrintPageTable
+// 	Para imprimir la tabla de páginas
+//----------------------------------------------------------------------
+void AddrSpace::PrintPageTable()
+{
+    DPRINT('p',"Tabla de páginas:\n");
+    DPRINT('p',"No. de página\tMarco físico\tVálido\n");
+    for (int i = 0; i < numPages; i++) {
+        DPRINT('p',"%d\t\t%d\t\t%d\n", 
+            pageTable[i].virtualPage, 
+            pageTable[i].physicalPage, 
+            pageTable[i].valid);
+    }
 }
