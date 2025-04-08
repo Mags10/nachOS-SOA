@@ -38,9 +38,11 @@ Machine::Run()
     interrupt->setStatus(UserMode);
     for (;;) {
         OneInstruction(instr);
-	interrupt->OneTick();
-	if (singleStep && (runUntilTime <= stats->totalTicks))
-	  Debugger();
+		interrupt->OneTick();
+		if (singleStep && (runUntilTime <= stats->totalTicks)){
+			currentThread->space->PrintPageTable();
+			Debugger();
+		}
     }
 }
 

@@ -257,6 +257,7 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
 		DPRINT('t', "\t%d\t\t\t%d\t\t\t%d\t\t\t%d*%d+%d=%d\n", virtAddr, vpn, offset, pageFrame, PageSize, offset, *physAddr);
 	} else {
 		DPRINT('p',"\t%d\t\t\t%d\t\t\t%d\t\t\t%d*%d+%d=%d\t\t*Fallo %d\n", virtAddr, vpn, offset, pageFrame, PageSize, offset, *physAddr, stats->numPageFaults);
+		DPRINT('s',"%d, ", vpn);
 	}
 
 	DPRINT('c', "%d, ", vpn);

@@ -103,7 +103,7 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
         pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
         pageTable[i].physicalPage = i;
         // Para inciso 1 - P03
-        pageTable[i].valid = FALSE; 
+        pageTable[i].valid = FALSE; //
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
         pageTable[i].readOnly = FALSE;  // if the code segment was entirely on 
@@ -148,7 +148,7 @@ AddrSpace::AddrSpace(OpenFile *executable, char* filename)
 
 void AddrSpace::createSwapFile(OpenFile *executable, char* filename)
 {
-    int headerSize = sizeof(NoffHeader); // Obtieen el tamaño del header (40 bytes)
+    int headerSize = sizeof(NoffHeader); // Obtienen el tamaño del header (40 bytes)
     int fileSize = executable->Length() - headerSize;
     char *content = new char[fileSize];
     executable->ReadAt(content, fileSize, headerSize);
@@ -172,7 +172,7 @@ void AddrSpace::createSwapFile(OpenFile *executable, char* filename)
 
 void AddrSpace::createRevFile(OpenFile *executable, char* filename)
 {
-    int headerSize = sizeof(NoffHeader); // Obtieen el tamaño del header (40 bytes)
+    int headerSize = sizeof(NoffHeader); // Obtienen el tamaño del header (40 bytes)
     int fileSize = 32; // Será fijo de 32 bytes
     char *content = new char[fileSize];
     executable->ReadAt(content, fileSize, headerSize);
@@ -267,14 +267,46 @@ void AddrSpace::SwapIn()
 {
     // Se obtiene el número de página a partir de la dirección de fallo
     int pageNumber = machine->ReadRegister(BadVAddrReg) / PageSize;
+
+    // revisamos si el número de página es válido y usado
+    if(pageTable[pageNumber].valid == TRUE && pageTable[pageNumber].dirty == TRUE)
+        this->SwapOut(pageNumber);
+    
     // Actualizamos la pagina física en la tabla de páginas
     pageTable[pageNumber].physicalPage = nextPhysicalPage++;
+
+    // Si se llega al límite de marcos físicos, reiniciamos
+    if(nextPhysicalPage >= NumPhysPages)
+        nextPhysicalPage = 0;
+
+    stats->numDiskReads++;
+    
     OpenFile *swapFile = fileSystem->Open(swapFileName);
     // Leemos la página del archivo swap y la cargamos en el marco físico asignado
     swapFile->ReadAt(&(machine->mainMemory[
                         pageTable[pageNumber].physicalPage * PageSize
                     ]), PageSize, pageNumber * PageSize);
     pageTable[pageNumber].valid = TRUE;
+    delete swapFile;
+}
+
+//----------------------------------------------------------------------
+// AddrSpace::SwapOut
+// 	Swap out a page from the main memory into the swap file
+//  Para inciso 3 - P03
+//----------------------------------------------------------------------
+void AddrSpace::SwapOut(int pageNumber)
+{
+    DPRINT('s', "Escribiendo en el archivo swap: %d\n", pageNumber);
+    stats->numDiskWrites++;
+    OpenFile *swapFile = fileSystem->Open(swapFileName);
+    // Escribimos la página del marco físico en el archivo swap
+    swapFile->WriteAt(&(machine->mainMemory[
+                        pageTable[pageNumber].physicalPage * PageSize
+                    ]), PageSize, pageNumber * PageSize);
+    pageTable[pageNumber].valid = FALSE;
+
+    DPRINT('s', "Escribiendo en el archivo swap: %d\n", pageNumber);
     delete swapFile;
 }
 

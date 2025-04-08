@@ -50,6 +50,9 @@ class AddrSpace {
     void SwapIn();			// Swap in a page from the swap file
           // into the main memory
 
+    void SwapOut(int pageNumber);	// Swap out a page from the main memory
+          // into the swap file
+
     void PrintPageTable();
 
   private:
