@@ -183,6 +183,8 @@ Machine::WriteMem(int addr, int size, int value)
 // 	"writing" -- if TRUE, check the "read-only" bit in the TLB
 //----------------------------------------------------------------------
 
+static int lastFaultVPN = -1; // Guarda el último VPN que causó un fallo
+
 ExceptionType
 Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
 {
@@ -252,12 +254,18 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
     ASSERT((*physAddr >= 0) && ((*physAddr + size) <= MemorySize));
     DEBUG('a', "phys addr = 0x%x\n", *physAddr);
 	
-    // Para inciso 3 - P03
 	if (machine->ReadRegister(BadVAddrReg) != virtAddr) {
+		// Normal translation, not a page fault
 		DPRINT('t', "\t%d\t\t\t%d\t\t\t%d\t\t\t%d*%d+%d=%d\n", virtAddr, vpn, offset, pageFrame, PageSize, offset, *physAddr);
 	} else {
-		DPRINT('p',"\t%d\t\t\t%d\t\t\t%d\t\t\t%d*%d+%d=%d\t\t*Fallo %d\n", virtAddr, vpn, offset, pageFrame, PageSize, offset, *physAddr, stats->numPageFaults);
-		DPRINT('s',"%d, ", vpn);
+		// This is a page fault
+		if (lastFaultVPN != vpn) {
+			// Only print if this is a different VPN than the last fault
+			DPRINT('p', "\t%d\t\t\t%d\t\t\t%d\t\t\t%d*%d+%d=%d\t\t*Fallo %d\n", 
+				   virtAddr, vpn, offset, pageFrame, PageSize, offset, *physAddr, stats->numPageFaults);
+			DPRINT('s', "%d, ", vpn);
+			lastFaultVPN = vpn; // Update the last fault VPN
+		}
 	}
 
 	DPRINT('c', "%d, ", vpn);
