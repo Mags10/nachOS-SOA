@@ -273,12 +273,11 @@ void AddrSpace::SwapIn()
     if (nextPhysicalPage >= NumPhysPages)
         nextPhysicalPage = 0;
     
-    // Buscar la victima para hacer swap out
+    // Buscar la víctima para hacer swap out (la página que actualmente usa este marco físico)
     for (int i = 0; i < numPages; i++) {
-        // Tiene que ser nextPhysicalPage y tiene que ser valido
-        if (pageTable[i].use && pageTable[i].physicalPage == physicalPage) {
-            //DPRINT('s', "\n\nHaciendo swap out de la página %d en marco físico %d\n\n", 
-             //      pageTable[i].virtualPage, physicalPage);
+        // Solo consideramos páginas válidas (en memoria) y que estén usando el marco físico que necesitamos
+        if (pageTable[i].valid && pageTable[i].physicalPage == physicalPage) {
+            // Hacemos swap out de esta página
             SwapOut(i);
             break;
         }
@@ -297,9 +296,8 @@ void AddrSpace::SwapIn()
     // Actualizar los bits de estado
     pageTable[pageNumber].valid = TRUE;
     pageTable[pageNumber].use = TRUE;
+    pageTable[pageNumber].dirty = FALSE;  // La página recién cargada no está modificada
     
-    //DPRINT('s', "Se realizó el swap in de la página %d en marco físico %d\n", 
-    //       pageNumber, physicalPage);
     delete swapFile;
 }
 
@@ -310,18 +308,23 @@ void AddrSpace::SwapIn()
 //----------------------------------------------------------------------
 void AddrSpace::SwapOut(int pageNumber)
 {
-    stats->numDiskWrites++;
-    OpenFile *swapFile = fileSystem->Open(swapFileName);
-    // Escribimos la página del marco físico en el archivo swap
-    swapFile->WriteAt(&(machine->mainMemory[
-                        pageTable[pageNumber].physicalPage * PageSize
-                    ]), PageSize, pageNumber * PageSize);
+    // Solo escribimos en el archivo swap si la página se ha modificado (dirty bit)
+    if (pageTable[pageNumber].dirty) {
+        stats->numDiskWrites++;
+        OpenFile *swapFile = fileSystem->Open(swapFileName);
+        // Escribimos la página del marco físico en el archivo swap
+        swapFile->WriteAt(&(machine->mainMemory[
+                            pageTable[pageNumber].physicalPage * PageSize
+                        ]), PageSize, pageNumber * PageSize);
+        delete swapFile;
+    }
+    
+    // Marcamos la página como inválida y no usada
     pageTable[pageNumber].valid = FALSE;
     pageTable[pageNumber].use = FALSE;
-
+    pageTable[pageNumber].dirty = FALSE;
 
     //DPRINT('s', "Escribiendo en el archivo swap: %d\n", pageNumber);
-    delete swapFile;
 }
 
 //----------------------------------------------------------------------

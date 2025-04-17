@@ -12,6 +12,7 @@ INCPATH = -I../threads -I../machine
 HFILES = $(THREAD_H)
 CFILES = $(THREAD_C)
 C_OFILES = $(THREAD_O)
+CFLAGS = -g -O3 -Wall -Wshadow $(INCPATH) $(DEFINES) $(HOST) -DCHANGED
 
 include ../Makefile.common
 include ../Makefile.dep
